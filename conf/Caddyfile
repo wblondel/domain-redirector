@@ -1,0 +1,63 @@
+{
+	# General Options
+	# nothing
+
+	# TLS Options
+	email contact@williamblondel.fr
+
+	# Server Options
+	# nothing
+}
+
+(logging) {
+	log {
+		output file /var/log/caddy/{args.0}_access.log {
+			roll_size 10MiB
+			roll_keep 10
+			roll_keep_for 168h
+		}
+		format json
+	}
+}
+
+# =========
+#  DEFAULT
+# =========
+
+# ===================
+#  NO CONTEXT HUMANS
+# ===================
+
+# The following block is not used because Fly.io redirects for us
+http://www.nocontexthumans.com {
+	import logging nocontexthumans.com
+
+	redir https://nocontexthumans.com{uri} permanent
+}
+
+http://nocontexthumans.com {
+	import logging nocontexthumans.com
+
+	respond "Nothing here for now!" 503
+}
+
+# ==================
+#  PERSONAL WEBSITE
+# ==================
+
+# The following block is not used because Fly.io redirects for us
+http://www.williamblondel.me http://www.williamblondel.com http://www.williamgeraldblondel.com {
+	import logging williamblondel.fr
+
+	encode zstd gzip
+
+	redir https://williamblondel.fr{uri} permanent
+}
+
+http://williamblondel.me http://williamblondel.com http://williamgeraldblondel.com {
+	import logging williamblondel.fr
+
+	encode zstd gzip
+
+	redir https://williamblondel.fr{uri} permanent
+}
